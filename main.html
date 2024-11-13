@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Safety Checker</title>
+    <style>
+        /* General page style */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Centered container for content */
+        .container {
+            text-align: center;
+            background-color: #fff;
+            padding: 30px 50px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        /* Heading style */
+        h1 {
+            color: #333;
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+        }
+
+        /* Input field styling */
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin: 15px 0;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+
+        /* Focused input field */
+        input[type="text"]:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        /* Button styling */
+        button {
+            padding: 12px 30px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Hover effect for button */
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Result text styling */
+        #result {
+            margin-top: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            min-height: 30px;
+        }
+
+        /* Safe result */
+        .safe {
+            color: rgb(128, 0, 0);
+        }
+
+        /* Not safe result */
+        .not-safe {
+            color: rgb(2, 163, 10);
+        }
+
+        /* Loading spinner */
+        .loading {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #007bff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        /* Animation for loading spinner */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>URL Safety Checker</h1>
+        <input type="text" id="urlInput" placeholder="Enter URL here">
+        <button onclick="checkUrl()">Check URL</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        async function checkUrl() {
+            const url = document.getElementById('urlInput').value;
+            const resultDiv = document.getElementById('result');
+
+            // Show loading spinner while processing
+            resultDiv.innerHTML = '<div class="loading"></div>';
+
+            // Make a request to the backend
+            const response = await fetch('/check-url', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ url })
+            });
+
+            const result = await response.json();
+
+            // Update the result
+            resultDiv.innerHTML = result.is_safe ? 
+                `<span class="safe">Not Safe</span>` : 
+                `<span class="not-safe">Safe</span>`;
+        }
+    </script>
+
+</body>
+</html>
